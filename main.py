@@ -61,11 +61,64 @@ query_error_occurrence = """
     WHERE errors.count::float / totals.count::float > 0.01;
 """
 
-# table properties;
-title_format = lambda title: "{:^60}".format(title.upper())
-header_format = lambda colh1, colh2: "{:^32} | {:^20}".format(colh1, colh2)
-delimiter_format = lambda sign="-": "{:-^33}+{:-^20}".format(sign, sign)
-row_format = lambda col1, col2: "{:^32} | {:^20}".format(col1, col2)
+'''
+    function:- title_header;
+    parameter(s):-
+        + title   ~> a string describing the data table;
+
+    return:- string;
+
+    description:- function used to format the data table title;
+'''
+
+
+def title_format(title):
+    return "{:^60}".format(title.upper())
+
+
+'''
+    function:- header_format;
+    parameter(s):-
+        + colh1    ~> a string describing the header for column one;
+        + colh2    ~> a string describing the header for column two;
+
+    return:- string;
+
+    description:- function used to format data table column header(s);
+'''
+
+
+def header_format(colh1, colh2):
+    return "{:^32} | {:^20}".format(colh1, colh2)
+
+'''
+    function:- delimiter_format;
+    parameter(s):-
+        + sign     ~> a delimiter character;
+
+    return:- string;
+
+    description:- a function used to format row delimiter;
+'''
+
+
+def delimiter_format(sign='-'):
+    return "{:-^33}+{:-^20}".format(sign, sign)
+
+'''
+    function:- row_format;
+    parameter(s):-
+        + col1     ~> data element for column one;
+        + col2     ~> data element for column two;
+
+    return:- string;
+
+    description:- a function used to format row(s);
+'''
+
+
+def row_format(col1, col2):
+    return "{:^32} | {:^20}".format(col1, col2)
 
 '''
     function:- execute;
@@ -76,9 +129,11 @@ row_format = lambda col1, col2: "{:^32} | {:^20}".format(col1, col2)
 
     description:- function used to execute SQL command(s);
 '''
+
+
 def execute(command):
-    cursor.execute(command);
-    result = cursor.fetchall();
+    cursor.execute(command)
+    result = cursor.fetchall()
 
     return result
 
@@ -94,6 +149,8 @@ def execute(command):
     description:- based on two-column data table structure, a function used to
                   write content of executed SQL query to file;
 '''
+
+
 def print_to_terminal(label, headerx, headery, data):
     title = title_format(label)
     header = header_format(headerx, headery)
@@ -130,6 +187,8 @@ def print_to_terminal(label, headerx, headery, data):
     description:- based on two-column data table structure, a function used to
                   write content of executed SQL query to output file;
 '''
+
+
 def print_to_report(label, headerx, headery, data, fop='a'):
     title = title_format(label)
     header = header_format(headerx, headery)
@@ -172,6 +231,8 @@ def print_to_report(label, headerx, headery, data, fop='a'):
         11 ~ (5);
         12 ~ (6);
 '''
+
+
 if __name__ == "__main__":
     # (1)
     db = psycopg2.connect(dbname=database_name_)
