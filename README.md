@@ -54,32 +54,28 @@ The above command will execute SQL commands stored in `newsdata.sql`, and it wil
 
 # Output
 
-    WHAT ARE THE MOST POPULAR ARTICLES OF ALL TIME
+###    WHAT ARE THE MOST POPULAR ARTICLES OF ALL TIME
 
-            article              |        views
---------------------------------:+:-------------------
-Candidate is jerk, alleges rival |        338647
---------------------------------:+:-------------------
-Bears love berries, alleges bear |        253801
---------------------------------:+:-------------------
-Bad things gone, say good people |        170098
+|            article              |        views      |
+| --- | --- |
+|Candidate is jerk, alleges rival |        338647     |
+|Bears love berries, alleges bear |        253801     |
+|Bad things gone, say good people |        170098     |
 
-  WHO ARE THE MOST POPULAR ARTICLE AUTHORS OF ALL TIME?
+###  WHO ARE THE MOST POPULAR ARTICLE AUTHORS OF ALL TIME?
 
-             author              |    article views
---------------------------------:+:-------------------
-        Ursula La Multa          |        507594
---------------------------------:+:-------------------
-     Rudolf von Treppenwitz      |        423457
---------------------------------:+:-------------------
-     Anonymous Contributor       |        170098
---------------------------------:+:-------------------
-         Markoff Chaney          |        84557
+|            author               |    article views  |
+| --- | --- |
+|        Ursula La Multa          |        507594     |
+|    Rudolf von Treppenwitz       |        423457     |
+|     Anonymous Contributor       |        170098     |
+|         Markoff Chaney          |        84557      |
 
-ON WHICH DAYS DID MORE THAN 1% OF REQUESTS LEAD TO AN ERRORS?
+### ON WHICH DAYS DID MORE THAN 1% OF REQUESTS LEAD TO AN ERRORS?
 
-              date               |      error rate
---------------------------------:+:-------------------
-           07/17/2016            |        2.26%
+|              date               |      error rate    |
+| --- | --- |
+|           07/17/2016            |        2.26%       |
 
 this data will also be made available in newly generated file ~ `report.txt`
+
