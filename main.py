@@ -91,6 +91,7 @@ def title_format(title):
 def header_format(colh1, colh2):
     return "{:^32} | {:^20}".format(colh1, colh2)
 
+
 '''
     function:- delimiter_format;
     parameter(s):-
@@ -104,6 +105,7 @@ def header_format(colh1, colh2):
 
 def delimiter_format(sign='-'):
     return "{:-^33}+{:-^20}".format(sign, sign)
+
 
 '''
     function:- row_format;
@@ -119,6 +121,7 @@ def delimiter_format(sign='-'):
 
 def row_format(col1, col2):
     return "{:^32} | {:^20}".format(col1, col2)
+
 
 '''
     function:- execute;
@@ -136,6 +139,7 @@ def execute(command):
     result = cursor.fetchall()
 
     return result
+
 
 '''
     function:- print_to_terminal;
@@ -172,6 +176,7 @@ def print_to_terminal(label, headerx, headery, data):
         entry = row_format(col_one, col_two)
 
         print(entry)
+
 
 '''
     function:- print_to_report;
@@ -212,6 +217,7 @@ def print_to_report(label, headerx, headery, data, fop='a'):
             output_file.write(entry + "\n")
 
         output_file.close()
+
 
 '''
     main program
