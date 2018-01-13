@@ -4,10 +4,10 @@ Based on the data in the database, the aim of this task is to create a reporting
 (in plain text). This project is a demonstration of a progress in knowledge and skill whilst undertaking
 a _Nanodegree in Full-Stack Web Development_ provided by Udacity and partner(s).
 
-The reporting tool is developed using [Python](https://www.python.org/) programming language and (PostgreSQL)[https://www.postgresql.org/] - a popular open-source Object-Relational Database System. For demonstration purposes, the project is using a database of
+The reporting tool is developed using [Python](https://www.python.org/) programming language and [PostgreSQL](https://www.postgresql.org/) - a popular open-source Object-Relational Database System. For demonstration purposes, the project is using a database of
 a fictional news website.
 
-The project has been checked for (PEP8)[https://www.python.org/dev/peps/pep-0008/] compliance using latest version of (pycodestyle)[https://pypi.python.org/pypi/pycodestyle]
+The project has been checked for [PEP8](https://www.python.org/dev/peps/pep-0008/) compliance using latest version of [pycodestyle](https://pypi.python.org/pypi/pycodestyle)
 
 Based on information stored inside the database, the project will answer following question(s):-
 
