@@ -1,8 +1,21 @@
 # Description
 
-The aim of this task is to create a reporting tool that prints out reports
-(in plain text) based on the date in the database. This reporting tool is a
-Python program using the `psycopg2` module to connect to the database.
+Based on the data in the database, the aim of this task is to create a reporting tool that prints out reports
+(in plain text). This project is a demonstration of a progress in knowledge and skill whilst undertaking
+a _Nanodegree in Full-Stack Web Development_ provided by Udacity and partner(s).
+
+The reporting tool is developed using [Python](https://www.python.org/) programming language and (PostgreSQL)[https://www.postgresql.org/] - a popular open-source Object-Relational Database System. For demonstration purposes, the project is using a database of
+a fictional news website.
+
+The project has been checked for (PEP8)[https://www.python.org/dev/peps/pep-0008/] compliance using latest version of (pycodestyle)[https://pypi.python.org/pypi/pycodestyle]
+
+Based on information stored inside the database, the project will answer following question(s):-
+
+a. what are the most popular three articles of all time?
+b. who are the most popular article authors of all time?
+c. on which days did more than one percent of requests lead to an errors?
+
+keyword(s): Python, PostgreSQL
 
 # Learning Outcome
 
@@ -34,12 +47,21 @@ this connection enter
 
 # Setting Database
 
-Given you've downloaded database file described in requirements, you must unzip this file retrieving `newsdata.sql` file on output.
+Given you've downloaded database file described in requirements section, you must unzip this file retrieving `newsdata.sql` file on output.
 Place this file into vagrant directory and run
 
-`vagrant -d news -f newsdata.sql`
+`psql -d news -f newsdata.sql`
 
 The above command will execute SQL commands stored in `newsdata.sql`, and it will connect you to the `news` database.
+
+NOTE:- In order to quit `psql`, type `\q` and hit enter;
+
+Given the above has been executed, the project requires some additional views to be loaded. The project contains file `create_views.sql`.
+Similarly to the above, pleace this file into vagrant directory and run
+
+`psql -d news -f create_views.sql`
+
+It contains necessary SQL command(s) to create required views to assist in answering the questions described in the description.
 
 # Execution
 
@@ -78,4 +100,3 @@ The above command will execute SQL commands stored in `newsdata.sql`, and it wil
 |           07/17/2016            |        2.26%       |
 
 this data will also be made available in newly generated file ~ `report.txt`
-
