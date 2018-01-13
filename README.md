@@ -11,9 +11,9 @@ The project has been checked for [PEP8](https://www.python.org/dev/peps/pep-0008
 
 Based on information stored inside the database, the project will answer following question(s):-
 
-a. what are the most popular three articles of all time?
-b. who are the most popular article authors of all time?
-c. on which days did more than one percent of requests lead to an errors?
+1. what are the most popular three articles of all time?
+2. who are the most popular article authors of all time?
+3. on which days did more than one percent of requests lead to an errors?
 
 keyword(s): Python, PostgreSQL
 
