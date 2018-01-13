@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 '''
     udacity project 3 - log analysis
 
@@ -16,17 +18,16 @@
 import psycopg2
 import datetime
 
-database_name_ = "news"
-file_name_ = "report.txt"
+DATABASE_NAME_ = "news"
+FILE_NAME_ = "report.txt"
 
 # this query retrieved the three most popular articles of all time;
 query_popular_articles = """
-    SELECT articles.title, COUNT(log.path) as views
+    SELECT title, COUNT(log.path) as views
     FROM articles
-    INNER JOIN authors ON authors.id = articles.author
-    INNER JOIN log ON log.path LIKE '%' || articles.slug || '%'
-    WHERE log.status LIKE '%200%'
-    GROUP BY authors.name, articles.title
+    INNER JOIN log ON log.path = '/article/' || articles.slug
+    WHERE log.status LIKE '200%'
+    GROUP BY title
     ORDER BY views DESC
     LIMIT 3
 """
@@ -36,21 +37,14 @@ query_popular_authors = """
     SELECT authors.name, COUNT(log.path) AS views
     FROM articles
     INNER JOIN authors ON authors.id = articles.author
-    INNER JOIN log ON log.path LIKE '%' || articles.slug || '%'
-    WHERE log.status LIKE '%200%'
+    INNER JOIN log ON log.path = '/article/' || articles.slug
+    WHERE log.status LIKE '200%'
     GROUP BY authors.name
     ORDER BY views DESC;
 """
 
 # this query retrieves the date(s) where error/request ratio is above 1%;
 query_error_occurrence = """
-    CREATE OR REPLACE VIEW errors AS
-    SELECT time::date, COUNT(status) FROM log WHERE status LIKE '%404%'
-    GROUP BY time::date;
-
-    CREATE OR REPLACE VIEW totals AS
-    SELECT time::date, COUNT(status) FROM log GROUP BY time::date;
-
     SELECT
     errors.time::date AS date,
     ROUND((errors.count::float / totals.count::float)::numeric * 100, 2) AS
@@ -61,101 +55,107 @@ query_error_occurrence = """
     WHERE errors.count::float / totals.count::float > 0.01;
 """
 
-'''
-    function:- title_header;
-    parameter(s):-
-        + title   ~> a string describing the data table;
-
-    return:- string;
-
-    description:- function used to format the data table title;
-'''
-
 
 def title_format(title):
+    '''
+        function:- title_header;
+        parameter(s):-
+            + title   ~> a string describing the data table;
+
+        return:- string;
+
+        description:- function used to format the data table title;
+    '''
+
     return "{:^60}".format(title.upper())
 
 
-'''
-    function:- header_format;
-    parameter(s):-
-        + colh1    ~> a string describing the header for column one;
-        + colh2    ~> a string describing the header for column two;
-
-    return:- string;
-
-    description:- function used to format data table column header(s);
-'''
-
-
 def header_format(colh1, colh2):
+    '''
+        function:- header_format;
+        parameter(s):-
+            + colh1    ~> a string describing the header for column one;
+            + colh2    ~> a string describing the header for column two;
+
+        return:- string;
+
+        description:- function used to format data table column header(s);
+    '''
+
     return "{:^32} | {:^20}".format(colh1, colh2)
 
 
-'''
-    function:- delimiter_format;
-    parameter(s):-
-        + sign     ~> a delimiter character;
-
-    return:- string;
-
-    description:- a function used to format row delimiter;
-'''
-
-
 def delimiter_format(sign='-'):
+    '''
+        function:- delimiter_format;
+        parameter(s):-
+            + sign     ~> a delimiter character;
+
+        return:- string;
+
+        description:- a function used to format row delimiter;
+    '''
+
     return "{:-^33}+{:-^20}".format(sign, sign)
 
 
-'''
-    function:- row_format;
-    parameter(s):-
-        + col1     ~> data element for column one;
-        + col2     ~> data element for column two;
-
-    return:- string;
-
-    description:- a function used to format row(s);
-'''
-
-
 def row_format(col1, col2):
+    '''
+        function:- row_format;
+        parameter(s):-
+            + col1     ~> data element for column one;
+            + col2     ~> data element for column two;
+
+        return:- string;
+
+        description:- a function used to format row(s);
+    '''
+
     return "{:^32} | {:^20}".format(col1, col2)
 
 
-'''
-    function:- execute;
-    parameter(s):-
-        + command   ~>   SQL query string;
-
-    return:- tuple;
-
-    description:- function used to execute SQL command(s);
-'''
-
-
 def execute(command):
-    cursor.execute(command)
-    result = cursor.fetchall()
+    '''
+        function:- execute;
+        parameter(s):-
+            + command   ~>   SQL query string;
+
+        return:- tuple;
+
+        description:- function used to execute SQL command(s);
+    '''
+    try:
+        db = psycopg2.connect(dbname=DATABASE_NAME_)
+
+        cursor = db.cursor()
+
+        cursor.execute(command)
+
+        result = cursor.fetchall()
+
+        db.close()
+
+    except psycopg2.Error as error_message:
+        print("woops! there was an error with the database connection")
+        print("error:- ", error_message)
 
     return result
 
 
-'''
-    function:- print_to_terminal;
-    parameter(s):-
-        + label     ~>   label used to describe data inside the table;
-        + headerx   ~>   first column header;
-        + headery   ~>   second column header;
-
-    return:- void;
-
-    description:- based on two-column data table structure, a function used to
-                  write content of executed SQL query to file;
-'''
-
-
 def print_to_terminal(label, headerx, headery, data):
+    '''
+        function:- print_to_terminal;
+        parameter(s):-
+            + label     ~>   label used to describe data inside the table;
+            + headerx   ~>   first column header;
+            + headery   ~>   second column header;
+
+        return:- void;
+
+        description:- based on two-column data table structure, a function
+                      used to write content of executed SQL query to file;
+    '''
+
     title = title_format(label)
     header = header_format(headerx, headery)
     delimiter = delimiter_format()
@@ -178,28 +178,28 @@ def print_to_terminal(label, headerx, headery, data):
         print(entry)
 
 
-'''
-    function:- print_to_report;
-    parameter(s):-
-        + label     ~>   label used to describe data inside the table;
-        + headerx   ~>   first column header;
-        + headery   ~>   second column header;
-        + data      ~>   SQL query result;
-        + fop       ~>   file operation type ('r', 'w', 'a' etc.)
-
-    return:- void;
-
-    description:- based on two-column data table structure, a function used to
-                  write content of executed SQL query to output file;
-'''
-
-
 def print_to_report(label, headerx, headery, data, fop='a'):
+    '''
+        function:- print_to_report;
+        parameter(s):-
+            + label     ~>   label used to describe data inside the table;
+            + headerx   ~>   first column header;
+            + headery   ~>   second column header;
+            + data      ~>   SQL query result;
+            + fop       ~>   file operation type ('r', 'w', 'a' etc.)
+
+        return:- void;
+
+        description:- based on two-column data table structure, a function
+                      used to write content of executed SQL query to output
+                      file;
+    '''
+
     title = title_format(label)
     header = header_format(headerx, headery)
     delimiter = delimiter_format()
 
-    with open(file_name_, fop) as output_file:
+    with open(FILE_NAME_, fop) as output_file:
         output_file.write("\n" + title + "\n")
         output_file.write(header + "\n")
 
@@ -219,69 +219,55 @@ def print_to_report(label, headerx, headery, data, fop='a'):
         output_file.close()
 
 
-'''
-    main program
-
-    story:-
-        1 ~ initialize connection to the database using 'psycopg2' interface;
-        2 ~ check connection to the database;
-        3 ~ retrieve database cursor;
-        4 ~ execute first SQL query to deduce the popular articles;
-        5 ~ initialize table properties title and column headers;
-        6 ~ present result(s)
-        7 ~ execute second SQL query to deduce the popular authors;
-        8 ~ (5);
-        9 ~ (6);
-        10 ~ execute third SQL query to deduce date(s) with error/request ratio
-            above one percent;
-        11 ~ (5);
-        12 ~ (6);
-'''
-
-
 if __name__ == "__main__":
+    '''
+        main program
+
+        story:-
+            1 ~ execute first SQL query to deduce the popular articles;
+            2 ~ initialize table properties title and column headers;
+            3 ~ get result(s)
+            4 ~ execute second SQL query to deduce the popular authors;
+            5 ~ (2);
+            6 ~ (3);
+            7 ~ execute third SQL query to deduce date(s) with error/request
+                ratio above one percent;
+            8 ~ (2);
+            9 ~ (3);
+    '''
+
     # (1)
-    db = psycopg2.connect(dbname=database_name_)
+    data = execute(query_popular_articles)
 
     # (2)
-    if db.closed < 1:
-        # (3)
-        cursor = db.cursor()
+    label = "what are the most popular articles of all time"
+    headerx = "article"
+    headery = "views"
 
-        # (4)
-        data = execute(query_popular_articles)
+    # (3)
+    print_to_terminal(label, headerx, headery, data)
+    print_to_report(label, headerx, headery, data, 'w')
 
-        # (5)
-        label = "what are the most popular articles of all time"
-        headerx = "article"
-        headery = "views"
+    # (4)
+    data = execute(query_popular_authors)
 
-        # (6)
-        print_to_terminal(label, headerx, headery, data)
-        print_to_report(label, headerx, headery, data, 'w')
+    # (5)
+    label = "who are the most popular article authors of all time?"
+    headerx = "author"
+    headery = "article views"
 
-        # (7)
-        data = execute(query_popular_authors)
+    # (6)
+    print_to_terminal(label, headerx, headery, data)
+    print_to_report(label, headerx, headery, data)
 
-        # (8)
-        label = "who are the most popular article authors of all time?"
-        headerx = "author"
-        headery = "article views"
+    # (7)
+    data = execute(query_error_occurrence)
 
-        # (9)
-        print_to_terminal(label, headerx, headery, data)
-        print_to_report(label, headerx, headery, data)
+    # (8)
+    label = "on which days did more than 1% of requests lead to an errors?"
+    headerx = "date"
+    headery = "error rate"
 
-        # (10)
-        data = execute(query_error_occurrence)
-
-        # (11)
-        label = "on which days did more than 1% of requests lead to an errors?"
-        headerx = "date"
-        headery = "error rate"
-
-        # (12)
-        print_to_terminal(label, headerx, headery, data)
-        print_to_report(label, headerx, headery, data)
-    else:
-        print("oops! something went wrong connecting to the database!")
+    # (9)
+    print_to_terminal(label, headerx, headery, data)
+    print_to_report(label, headerx, headery, data)
